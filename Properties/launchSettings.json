@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "SmartHomeAutomation": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7097",
+      "launchBrowser": false
+    }
+  }
+}
