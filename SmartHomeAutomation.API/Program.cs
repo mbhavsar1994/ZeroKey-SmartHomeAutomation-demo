@@ -30,6 +30,8 @@ builder.Services.AddSingleton<IMessageReceiver, MessageReceiver>();
 builder.Services.AddSingleton<IEventHubTriggerHandler, EventHubTriggerHandler>();
 builder.Services.AddSingleton<IRuleEvaluator, RuleEvaluator>();
 builder.Services.AddSingleton<IAlertService, AlertService>();
+builder.Services.AddSingleton<IUserProfileRepository, UserProfileRepository>();
+builder.Services.AddSingleton<IUserProfileService, UserProfileService>();
 
 // Register actions
 builder.Services.AddSingleton<IAutomationAction, SendAlertAction>();
