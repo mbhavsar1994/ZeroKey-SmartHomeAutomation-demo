@@ -35,7 +35,7 @@
 ```bash
 git clone https://github.com/your-username/smart-home-automation.git
 cd smart-home-automation
-```
+
 
 ### Update local.settings.json with your Azure resource connection strings for Azure functions
 
@@ -76,4 +76,4 @@ cd smart-home-automation
     "InstrumentationKey": "application-insights-instrumentation-key"
   }
 }
-
+```
