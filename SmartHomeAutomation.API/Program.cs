@@ -1,5 +1,6 @@
 using Azure.Messaging.ServiceBus;
 using Microsoft.Azure.Cosmos;
+using SmartHomeAutomation.API.Middleware;
 using SmartHomeAutomation.Services.Interfaces;
 using SmartHomeAutomation.Services.Repositories;
 using SmartHomeAutomation.Services.Services;
@@ -53,5 +54,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseAuthorization();
+
+// Use the logging middlewareßß
+app.UseMiddleware<LoggingMiddleware>();
+
 app.MapControllers();
 app.Run();
