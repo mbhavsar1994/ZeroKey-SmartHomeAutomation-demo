@@ -13,11 +13,6 @@
 4. **Azure Service Bus**: Decouples services and ensures reliable communication of state changes.
 5. **Azure Cosmos DB**: Stores the device state and automation rules.
 
-## Prerequisites
-
-- Azure Subscription
-- .NET SDK
-- Azure CLI
 
 ## Setup
 
@@ -40,7 +35,7 @@
 ```bash
 git clone https://github.com/your-username/smart-home-automation.git
 cd smart-home-automation
-
+```
 
 ### Update local.settings.json with your Azure resource connection strings for Azure functions
 
@@ -81,3 +76,4 @@ cd smart-home-automation
     "InstrumentationKey": "application-insights-instrumentation-key"
   }
 }
+
