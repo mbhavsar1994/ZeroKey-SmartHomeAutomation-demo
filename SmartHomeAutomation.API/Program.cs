@@ -1,4 +1,5 @@
 using Azure.Messaging.ServiceBus;
+using Azure.Storage.Blobs;
 using Microsoft.Azure.Cosmos;
 using SmartHomeAutomation.API.Middleware;
 using SmartHomeAutomation.Services.Interfaces;
@@ -16,10 +17,11 @@ builder.Configuration
 // Add services to the container.
 string cosmosDbConnectionString = builder.Configuration["CosmosDBConnectionString"];
 string serviceBusConnectionString = builder.Configuration["ServiceBusConnectionString"];
+string blobStorageConnectionString = builder.Configuration["BlobStorageConnectionString"];
 
 builder.Services.AddSingleton(s => new CosmosClient(cosmosDbConnectionString));
 builder.Services.AddSingleton(s => new ServiceBusClient(serviceBusConnectionString));
-
+builder.Services.AddSingleton(a => new BlobServiceClient(blobStorageConnectionString));
 
 builder.Services.AddSingleton<IDeviceRepository, DeviceRepository>();
 builder.Services.AddSingleton<IDeviceEventRepository, DeviceEventRepository>();
@@ -30,8 +32,8 @@ builder.Services.AddSingleton<IMessageReceiver, MessageReceiver>();
 builder.Services.AddSingleton<IEventHubTriggerHandler, EventHubTriggerHandler>();
 builder.Services.AddSingleton<IRuleEvaluator, RuleEvaluator>();
 builder.Services.AddSingleton<IAlertService, AlertService>();
-builder.Services.AddSingleton<IUserProfileRepository, UserProfileRepository>();
-builder.Services.AddSingleton<IUserProfileService, UserProfileService>();
+builder.Services.AddSingleton<ISmartThermostatService, SmartThermostatService>();
+builder.Services.AddSingleton<IReportRequestService, ReportRequestService>();
 
 // Register actions
 builder.Services.AddSingleton<IAutomationAction, SendAlertAction>();
@@ -56,6 +58,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseAuthorization();
+
+// Use the custom exception handler middleware
+app.UseMiddleware<ExceptionHandlerMiddleware>();
 
 // Use the logging middlewareßß
 app.UseMiddleware<LoggingMiddleware>();

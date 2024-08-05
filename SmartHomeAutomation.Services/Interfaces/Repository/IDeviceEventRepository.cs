@@ -12,4 +12,6 @@ public interface IDeviceEventRepository
     /// </summary>
     /// <param name="deviceEvent">Event data to store.</param>
     Task StoreEventDataAsync(DeviceEvent deviceEvent);
+    
+    Task<IEnumerable<DeviceEvent>> GetEventsByDeviceIdAsync(string deviceId);
 }

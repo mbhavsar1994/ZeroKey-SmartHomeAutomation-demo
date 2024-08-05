@@ -50,6 +50,7 @@ namespace SmartHomeAutomation.Services.Services;
                 if (isTriggered)
                 {
                     await _messageSender.SendMessageAsync(_automationRuleTriggerTopicName, $"Triggered for device: {deviceId}, Temperature: {temperature}, Humidity: {humidity}");
+                   
                     if (_actions.ContainsKey(rule.Action))
                     {
                         _actions[rule.Action].ExecuteAsync(rule.DeviceId, temperature, humidity).GetAwaiter().GetResult();

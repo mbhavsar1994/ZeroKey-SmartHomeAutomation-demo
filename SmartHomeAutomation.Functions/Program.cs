@@ -2,6 +2,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.DependencyInjection;
 using Azure.Messaging.ServiceBus;
+using Azure.Storage.Blobs;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SmartHomeAutomation.Services.Interfaces;
@@ -18,9 +19,13 @@ var host = new HostBuilder()
     {
         string cosmosDbConnectionString = context.Configuration["CosmosDBConnectionString"];
         string serviceBusConnectionString = context.Configuration["ServiceBusConnectionString"];
+        string blobStorageConnectionString = context.Configuration["BlobStorageConnectionString"];
+
 
         services.AddSingleton(s => new CosmosClient(cosmosDbConnectionString));
         services.AddSingleton(s => new ServiceBusClient(serviceBusConnectionString));
+        services.AddSingleton(a => new BlobServiceClient(blobStorageConnectionString));
+
 
         services.AddSingleton<IDeviceRepository, DeviceRepository>();
         services.AddSingleton<IDeviceEventRepository, DeviceEventRepository>();

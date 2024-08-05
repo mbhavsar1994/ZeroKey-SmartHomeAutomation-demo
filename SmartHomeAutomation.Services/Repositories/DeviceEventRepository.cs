@@ -30,4 +30,20 @@ public class DeviceEventRepository : IDeviceEventRepository
         await _container.CreateItemAsync(deviceEvent, new PartitionKey(deviceEvent.DeviceId));
         _logger.LogInformation($"Stored event data for device: {deviceEvent.DeviceId}");
     }
+    
+    /// <inheritdoc/>
+    public async Task<IEnumerable<DeviceEvent>> GetEventsByDeviceIdAsync(string deviceId)
+    {
+        var query = new QueryDefinition("SELECT * FROM c WHERE c.DeviceId = @deviceId")
+            .WithParameter("@deviceId", deviceId);
+
+        var iterator = _container.GetItemQueryIterator<DeviceEvent>(query);
+        var results = new List<DeviceEvent>();
+        while (iterator.HasMoreResults)
+        {
+            var response = await iterator.ReadNextAsync();
+            results.AddRange(response);
+        }
+        return results;
+    }
 }

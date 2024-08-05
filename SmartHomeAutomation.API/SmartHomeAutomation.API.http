@@ -1,6 +1,35 @@
-@SmartHomeAutomation.API_HostAddress = http://localhost:5234
+### Get User Profile
+# This request fetches the user profile with the specified userId.
+GET http://localhost:5000/api/UserProfile/{userId}
+Content-Type: application/json
 
-GET {{SmartHomeAutomation.API_HostAddress}}/weatherforecast/
-Accept: application/json
+### Save User Profile
+# This request saves a new user profile.
+POST http://localhost:5000/api/UserProfile
+Content-Type: application/json
 
-###
+{
+  "userId": "user1",
+  "name": "John Doe",
+  "email": "john.doe@example.com",
+  "preferences": "{ \"theme\": \"dark\", \"notifications\": true }"
+}
+
+### Get Device Event History
+# This request fetches the device event history for the specified deviceId.
+GET http://localhost:5000/api/DeviceEventHistory/{deviceId}
+Content-Type: application/json
+
+### Save Device Event History
+# This request saves a new device event history record.
+POST http://localhost:5000/api/DeviceEventHistory
+Content-Type: application/json
+
+{
+  "eventId": "event1",
+  "deviceId": "device1",
+  "temperature": 23.5,
+  "humidity": 45.2,
+  "timestamp": "2024-01-01T12:00:00Z"
+}
+

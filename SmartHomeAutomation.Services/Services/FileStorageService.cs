@@ -1,4 +1,5 @@
 using Azure.Storage.Blobs;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SmartHomeAutomation.Services.Interfaces;
 
@@ -17,10 +18,14 @@ public class FileStorageService : IFileStorageService
     /// </summary>
     /// <param name="logger">Logger instance.</param>
     /// <param name="blobServiceClient">Blob service client instance.</param>
-    public FileStorageService(ILogger<FileStorageService> logger, BlobServiceClient blobServiceClient)
+    /// <param name="configuration">Configuration instance.</param>
+    public FileStorageService(ILogger<FileStorageService> logger, 
+        BlobServiceClient blobServiceClient,
+        IConfiguration configuration)
     {
         _logger = logger;
-        _containerClient = blobServiceClient.GetBlobContainerClient("device-logs");
+        var blobContainerName = configuration["SmartHomeBlobContainer"];
+        _containerClient = blobServiceClient.GetBlobContainerClient(blobContainerName);
     }
 
     /// <inheritdoc/>
