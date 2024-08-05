@@ -1,44 +1,59 @@
+using Azure.Messaging.ServiceBus;
+using Microsoft.Azure.Cosmos;
+using SmartHomeAutomation.Services.Interfaces;
+using SmartHomeAutomation.Services.Repositories;
+using SmartHomeAutomation.Services.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
+// Configure app configuration
+builder.Configuration
+    .SetBasePath(builder.Environment.ContentRootPath)
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddEnvironmentVariables();
+
 // Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+string cosmosDbConnectionString = builder.Configuration["CosmosDBConnectionString"];
+string serviceBusConnectionString = builder.Configuration["ServiceBusConnectionString"];
+
+builder.Services.AddSingleton(s => new CosmosClient(cosmosDbConnectionString));
+builder.Services.AddSingleton(s => new ServiceBusClient(serviceBusConnectionString));
+
+
+builder.Services.AddSingleton<IDeviceRepository, DeviceRepository>();
+builder.Services.AddSingleton<IDeviceEventRepository, DeviceEventRepository>();
+builder.Services.AddSingleton<IAutomationRuleRepository, AutomationRuleRepository>();
+builder.Services.AddSingleton<IFileStorageService, FileStorageService>();
+builder.Services.AddSingleton<IMessageSender, MessageSender>();
+builder.Services.AddSingleton<IMessageReceiver, MessageReceiver>();
+builder.Services.AddSingleton<IEventHubTriggerHandler, EventHubTriggerHandler>();
+builder.Services.AddSingleton<IRuleEvaluator, RuleEvaluator>();
+builder.Services.AddSingleton<IAlertService, AlertService>();
+
+// Register actions
+builder.Services.AddSingleton<IAutomationAction, SendAlertAction>();
+builder.Services.AddSingleton<IAutomationAction, AdjustDeviceSettingsAction>();
+
+// Configure logging
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.AddApplicationInsights(builder.Configuration["ApplicationInsights:InstrumentationKey"]);
+
+// Add controllers
+builder.Services.AddControllers();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseDeveloperExceptionPage();
 }
 
 app.UseHttpsRedirection();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+app.UseAuthorization();
 
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast")
-.WithOpenApi();
+app.MapControllers();
 
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
