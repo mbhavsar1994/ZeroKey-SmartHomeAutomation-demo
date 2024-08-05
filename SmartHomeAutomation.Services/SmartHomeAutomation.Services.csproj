@@ -10,6 +10,7 @@
     <PackageReference Include="Azure.Storage.Blobs" Version="12.21.1" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="9.0.0-preview.6.24328.4" />
     <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.42.0" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="9.0.0-preview.6.24327.7" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.0-preview.6.24327.7" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.0-preview.6.24327.7" />
   </ItemGroup>

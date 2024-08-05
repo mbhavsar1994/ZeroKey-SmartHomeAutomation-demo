@@ -38,6 +38,8 @@ var host = new HostBuilder()
         services.AddSingleton<ISmartThermostatReportService, SmartThermostatReportService>();
         services.AddSingleton<IReportGenerator, ReportGenerator>();
 
+        services.AddMemoryCache(); 
+        
         // Register actions
         services.AddSingleton<IAutomationAction, SendAlertAction>();
         services.AddSingleton<IAutomationAction, AdjustDeviceSettingsAction>();
