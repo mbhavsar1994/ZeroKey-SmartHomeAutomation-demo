@@ -5,7 +5,6 @@ using Azure.Messaging.ServiceBus;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SmartHomeAutomation.Services.Interfaces;
-using SmartHomeAutomation.Services;
 using SmartHomeAutomation.Services.Repositories;
 using SmartHomeAutomation.Services.Services;
 

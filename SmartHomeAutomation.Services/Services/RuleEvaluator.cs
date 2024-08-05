@@ -1,7 +1,7 @@
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SmartHomeAutomation.Models;
 using SmartHomeAutomation.Services.Interfaces;
-
 namespace SmartHomeAutomation.Services.Services;
 
     /// <summary>
@@ -12,6 +12,7 @@ namespace SmartHomeAutomation.Services.Services;
         private readonly ILogger<RuleEvaluator> _logger;
         private readonly IAutomationRuleRepository _ruleRepository;
         private readonly IMessageSender _messageSender;
+        private readonly string _automationRuleTriggerTopicName;
         private readonly Dictionary<string, IAutomationAction> _actions;
 
         /// <summary>
@@ -20,15 +21,18 @@ namespace SmartHomeAutomation.Services.Services;
         /// <param name="logger">Logger instance.</param>
         /// <param name="ruleRepository">Rule repository instance.</param>
         /// <param name="messageSender">Message sender instance.</param>
+        /// <param name="configuration">Configuration instance.</param>
         /// <param name="actions">Collection of automation actions.</param>
         public RuleEvaluator(ILogger<RuleEvaluator> logger, 
             IAutomationRuleRepository ruleRepository, 
             IMessageSender messageSender, 
+            IConfiguration configuration,
             IEnumerable<IAutomationAction> actions)
         {
             _logger = logger;
             _ruleRepository = ruleRepository;
             _messageSender = messageSender;
+            _automationRuleTriggerTopicName = configuration["AutomationRuleTriggerTopic"];
             _actions = actions.ToDictionary(a => a.GetType().Name, a => a);
         }
 
@@ -45,7 +49,7 @@ namespace SmartHomeAutomation.Services.Services;
 
                 if (isTriggered)
                 {
-                    await _messageSender.SendMessageAsync("AutomationRuleTriggerTopic", $"Triggered for device: {deviceId}, Temperature: {temperature}, Humidity: {humidity}");
+                    await _messageSender.SendMessageAsync(_automationRuleTriggerTopicName, $"Triggered for device: {deviceId}, Temperature: {temperature}, Humidity: {humidity}");
                     if (_actions.ContainsKey(rule.Action))
                     {
                         _actions[rule.Action].ExecuteAsync(rule.DeviceId, temperature, humidity).GetAwaiter().GetResult();
