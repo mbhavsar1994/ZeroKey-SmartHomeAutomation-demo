@@ -1,6 +1,8 @@
 using Azure.Messaging.ServiceBus;
 using Azure.Storage.Blobs;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Azure.Cosmos;
+using Microsoft.Identity.Web;
 using SmartHomeAutomation.API.Hubs;
 using SmartHomeAutomation.API.Middleware;
 using SmartHomeAutomation.Services.Interfaces;
@@ -52,6 +54,15 @@ builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 builder.Logging.AddApplicationInsights(builder.Configuration["ApplicationInsights:InstrumentationKey"]);
 
+// Configure Azure AD authentication
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("DevicePolicy", policy => policy.RequireClaim("roles", "Device.ReadWrite"));
+});
+
 // Add controllers
 builder.Services.AddControllers();
 
@@ -65,6 +76,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseAuthorization();
 
 // Use the custom exception handler middleware

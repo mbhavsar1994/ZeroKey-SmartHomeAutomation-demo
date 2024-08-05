@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SmartHomeAutomation.Models;
 using SmartHomeAutomation.Services.Interfaces;
@@ -9,6 +10,7 @@ namespace SmartHomeAutomation.API.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
+[Authorize] 
 public class DeviceController : ControllerBase
 {
     private readonly IDeviceRepository _deviceRepository;
@@ -30,11 +32,16 @@ public class DeviceController : ControllerBase
     /// </summary>
     /// <param name="device">Device to create.</param>
     /// <returns>Action result.</returns>
-    [HttpPost]
-    public async Task<IActionResult> CreateDevice([FromBody] Device device)
+    [HttpPost("addDevice")]
+    public async Task<IActionResult> AddDevice([FromBody] Device device)
     {
+        if (!ModelState.IsValid)
+        {
+            _logger.LogWarning("Invalid model state for AddDevice request.");
+            return BadRequest(ModelState);
+        }
         await _deviceRepository.CreateDeviceAsync(device);
-        _logger.LogInformation($"Device created: {device.Id}");
+        _logger.LogInformation($"Device added: {device.Id}");
         return Ok(device);
     }
 

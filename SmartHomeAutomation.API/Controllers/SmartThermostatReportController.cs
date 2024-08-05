@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SmartHomeAutomation.Models;
 using SmartHomeAutomation.Services.Interfaces;
@@ -6,6 +7,7 @@ namespace SmartHomeAutomation.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize] 
 public class SmartThermostatReportController : ControllerBase
 {
     private readonly IReportRequestService _reportRequestService;
