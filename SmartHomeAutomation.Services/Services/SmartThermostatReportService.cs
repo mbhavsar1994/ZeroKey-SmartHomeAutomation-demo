@@ -21,7 +21,6 @@ public class SmartThermostatReportService : ISmartThermostatReportService
         await containerClient.CreateIfNotExistsAsync(Azure.Storage.Blobs.Models.PublicAccessType.Blob);
         var blobClient = containerClient.GetBlobClient(fileName);
         await blobClient.UploadAsync(fileStream, overwrite: true);
-
         _logger.LogInformation($"Report uploaded to {blobClient.Uri}");
         return blobClient.Uri.ToString();
     }

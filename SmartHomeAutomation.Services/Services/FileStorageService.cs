@@ -24,16 +24,17 @@ public class FileStorageService : IFileStorageService
         IConfiguration configuration)
     {
         _logger = logger;
-        var blobContainerName = configuration["SmartHomeBlobContainer"];
+        var blobContainerName = configuration["ReportBlobContainer"];
         _containerClient = blobServiceClient.GetBlobContainerClient(blobContainerName);
     }
 
     /// <inheritdoc/>
-    public async Task UploadFileAsync(string fileName, Stream fileStream)
+    public async Task<string> UploadFileAsync(string fileName, Stream fileStream)
     {
         var blobClient = _containerClient.GetBlobClient(fileName);
-        await blobClient.UploadAsync(fileStream);
+        await blobClient.UploadAsync(fileStream, overwrite:true);
         _logger.LogInformation($"Uploaded file: {fileName}");
+        return blobClient.Uri.ToString();
     }
 
     /// <inheritdoc/>

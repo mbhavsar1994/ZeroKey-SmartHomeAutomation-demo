@@ -32,14 +32,21 @@ var host = new HostBuilder()
         services.AddSingleton<IAutomationRuleRepository, AutomationRuleRepository>();
         services.AddSingleton<IFileStorageService, FileStorageService>();
         services.AddSingleton<IMessageSender, MessageSender>();
-        services.AddSingleton<IMessageReceiver, MessageReceiver>();
         services.AddSingleton<IEventHubTriggerHandler, EventHubTriggerHandler>();
         services.AddSingleton<IRuleEvaluator, RuleEvaluator>();
         services.AddSingleton<IAlertService, AlertService>();
+        services.AddSingleton<ISmartThermostatReportService, SmartThermostatReportService>();
+        services.AddSingleton<IReportGenerator, ReportGenerator>();
 
         // Register actions
         services.AddSingleton<IAutomationAction, SendAlertAction>();
         services.AddSingleton<IAutomationAction, AdjustDeviceSettingsAction>();
+        
+        
+        services.AddSingleton<ISignalRNotificationService>(sp =>
+            new SignalRNotificationService(context.Configuration, sp.GetRequiredService<ILogger<SignalRNotificationService>>()));
+
+        services.AddSingleton<IReportNotificationService, ReportNotificationService>();
     })
     .ConfigureLogging(logging =>
     {

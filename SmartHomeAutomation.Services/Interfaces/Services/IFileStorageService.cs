@@ -1,3 +1,6 @@
+using Azure;
+using Azure.Storage.Blobs.Models;
+
 namespace SmartHomeAutomation.Services.Interfaces;
 
 /// <summary>
@@ -10,9 +13,9 @@ public interface IFileStorageService
     /// </summary>
     /// <param name="fileName">Name of the file.</param>
     /// <param name="fileStream">File stream.</param>
-    Task UploadFileAsync(string fileName, Stream fileStream);
+    Task<string> UploadFileAsync(string fileName, Stream fileStream);
 
-    /// <summary>
+    /// <summary>ßßß
     /// Downloads a file.
     /// </summary>
     /// <param name="fileName">Name of the file.</param>

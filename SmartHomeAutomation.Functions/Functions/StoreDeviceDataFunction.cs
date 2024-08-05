@@ -29,7 +29,8 @@ public class StoreDeviceDataFunction
     /// </summary>
     /// <param name="events">Array of EventData from Event Hub.</param>
     [Function("StoreDeviceData")]
-    public async Task Run([EventHubTrigger("%eventHubName%", Connection = "eventHubConnectionString")] EventData[] events)
+    public async Task Run(
+        [EventHubTrigger("%eventHubName%", Connection = "eventHubConnectionString")] EventData[] events)
     {
         _logger.LogInformation("StoreDeviceData function triggered");
 

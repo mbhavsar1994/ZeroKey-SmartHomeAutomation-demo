@@ -1,6 +1,7 @@
 using Azure.Messaging.ServiceBus;
 using Azure.Storage.Blobs;
 using Microsoft.Azure.Cosmos;
+using SmartHomeAutomation.API.Hubs;
 using SmartHomeAutomation.API.Middleware;
 using SmartHomeAutomation.Services.Interfaces;
 using SmartHomeAutomation.Services.Repositories;
@@ -18,6 +19,7 @@ builder.Configuration
 string cosmosDbConnectionString = builder.Configuration["CosmosDBConnectionString"];
 string serviceBusConnectionString = builder.Configuration["ServiceBusConnectionString"];
 string blobStorageConnectionString = builder.Configuration["BlobStorageConnectionString"];
+string signalRHubUrl = builder.Configuration["SignalRHubUrl"];
 
 builder.Services.AddSingleton(s => new CosmosClient(cosmosDbConnectionString));
 builder.Services.AddSingleton(s => new ServiceBusClient(serviceBusConnectionString));
@@ -28,16 +30,22 @@ builder.Services.AddSingleton<IDeviceEventRepository, DeviceEventRepository>();
 builder.Services.AddSingleton<IAutomationRuleRepository, AutomationRuleRepository>();
 builder.Services.AddSingleton<IFileStorageService, FileStorageService>();
 builder.Services.AddSingleton<IMessageSender, MessageSender>();
-builder.Services.AddSingleton<IMessageReceiver, MessageReceiver>();
 builder.Services.AddSingleton<IEventHubTriggerHandler, EventHubTriggerHandler>();
 builder.Services.AddSingleton<IRuleEvaluator, RuleEvaluator>();
 builder.Services.AddSingleton<IAlertService, AlertService>();
 builder.Services.AddSingleton<ISmartThermostatService, SmartThermostatService>();
 builder.Services.AddSingleton<IReportRequestService, ReportRequestService>();
+builder.Services.AddSingleton<ISmartThermostatReportService, SmartThermostatReportService>();
+builder.Services.AddSingleton<IReportGenerator, ReportGenerator>();
+builder.Services.AddSingleton<ISignalRNotificationService>(sp =>
+    new SignalRNotificationService(builder.Configuration, sp.GetRequiredService<ILogger<SignalRNotificationService>>()));
 
+builder.Services.AddSingleton<IReportNotificationService, ReportNotificationService>();
 // Register actions
 builder.Services.AddSingleton<IAutomationAction, SendAlertAction>();
 builder.Services.AddSingleton<IAutomationAction, AdjustDeviceSettingsAction>();
+
+builder.Services.AddSignalR();
 
 // Configure logging
 builder.Logging.ClearProviders();
@@ -66,4 +74,5 @@ app.UseMiddleware<ExceptionHandlerMiddleware>();
 app.UseMiddleware<LoggingMiddleware>();
 
 app.MapControllers();
+app.MapHub<NotificationHub>("/notificationHub");
 app.Run();
