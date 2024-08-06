@@ -63,6 +63,7 @@ cd smart-home-automation
   "ServiceBusConnectionString": "service-bus-connection-string",
   "ReportRequestQueue": "report-requests",
   "SignalRHubUrl": "signalr_hub_url",
+  "BlobStorageConnectionString": "blob_storage_connection_string",
   "ReportBlobContainer": "energy-consumption-reports",
   "AzureAd": {
     "Instance": "https://login.microsoftonline.com/",
